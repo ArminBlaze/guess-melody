@@ -1,7 +1,10 @@
+import '../animate.js';
+import '../player.js';
 import utils from '../utils.js';
+import data from '../data.js';
 import screensController from '../screensController.js';
 
-const template = `<section class="main main--level main--level-genre">
+const template = (question) => `<section class="main main--level main--level-genre">
     <h2 class="title">Выберите инди-рок треки</h2>
     <form class="genre">
       <div class="genre-answer">
@@ -33,7 +36,21 @@ const template = `<section class="main main--level main--level-genre">
   </section>`;
 
 function getElem() {
-  const elem = utils.getElementFromTemplate(template);
+  data.init();
+  const question = data.getRandomQuestion();
+  console.log(`Ответы в вопросе: `,question.answers);
+
+
+  const audioFile = question.answers[question.correctAnswerId].audio;
+
+  const elem = utils.getElementFromTemplate(template(question));
+
+  let playerWrapper = elem.querySelector(`.player-wrapper`);
+  window.initializePlayer(playerWrapper, audioFile);
+
+  /////
+
+//  const elem = utils.getElementFromTemplate(template);
   const button = elem.querySelector(`.genre-answer-send`);
   button.setAttribute(`disabled`, ``);
   button.onclick = function (e) {

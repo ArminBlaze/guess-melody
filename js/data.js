@@ -2,13 +2,13 @@ import utils from './utils.js';
 
 const questions = [
   {
-    question: `Кто это поёт?`,
+    text: `Кто исполняет эту песню?`,
     correctAnswerId: 1,
     answers: {}
   },
   {
-    question: `Чей это трек?`,
-    correctAnswerId: 0,
+    text: `Чей это трек?`,
+    correctAnswerId: 2,
     answers: {}
   }
 ];
@@ -22,25 +22,95 @@ const answers = [
     genre: `electronic`
   },
   {
-    name: `Пелагея`,
-    description: `Пелагея - певица такая`,
+    name: `Алсу`,
+    description: `Алсу - певица такая`,
     image: ``,
-    audio: ``,
+    audio: `../music/Alsu.mp3`,
+    genre: `pop`
+  },
+  {
+    name: `Король и шут`,
+    description: `Панк-рок группа`,
+    image: ``,
+    audio: `../music/05. Blujdayut teni.mp3`,
+    genre: `rock`
+  },
+  {
+    name: `Мельница`,
+    description: `Русская фолк-рок группа`,
+    image: ``,
+    audio: `../music/11 - Korolevna.mp3`,
     genre: `folk`
   },
   {
-    name: `Краснознаменная дивизия имени моей бабушки`,
-    description: `Краснознаменная дивизия имени моей бабушки`,
+    name: `Земфира`,
+    description: ``,
     image: ``,
-    audio: ``,
-    genre: `folk`
+    audio: `../music/Zemfira-trafic.mp3`,
+    genre: `rock`
   },
   {
-    name: `Lorde`,
-    description: `Lorde - финская группа`,
+    name: `Земфира`,
+    description: ``,
     image: ``,
-    audio: ``,
-    genre: `folk`
+    audio: `../music/Zemfira - Romashki.mp3`,
+    genre: `rock`
+  },
+  {
+    name: `Виктор Цой`,
+    description: ``,
+    image: ``,
+    audio: `../music/Aluminievie ogurci.mp3`,
+    genre: `rock`
+  },
+  {
+    name: `Виктор Цой`,
+    description: ``,
+    image: ``,
+    audio: `../music/Gruppa krovi.mp3`,
+    genre: `rock`
+  },
+  {
+    name: `Виктор Цой`,
+    description: ``,
+    image: ``,
+    audio: `../music/Zvezda po imeni Solnce.mp3`,
+    genre: `rock`
+  },
+  {
+    name: `ГДР`,
+    description: ``,
+    image: ``,
+    audio: `../music/GDR - Jonatan.mp3`,
+    genre: `rock`
+  },
+  {
+    name: `Смысловые Галлюцинации`,
+    description: ``,
+    image: ``,
+    audio: `../music/Smislovie gallucinacii - Vecno molodoy.mp3`,
+    genre: `rock`
+  },
+  {
+    name: `Смысловые Галлюцинации`,
+    description: ``,
+    image: ``,
+    audio: `../music/Smislovie gallucinacii - Perviy den oseni.mp3`,
+    genre: `rock`
+  },
+  {
+    name: `Сплин`,
+    description: ``,
+    image: ``,
+    audio: `../music/Splin - Alisa.mp3`,
+    genre: `rock`
+  },
+  {
+    name: `Чайф`,
+    description: ``,
+    image: ``,
+    audio: `../music/Chaif - salto nazad.mp3`,
+    genre: `rock`
   }
 ];
 
@@ -57,7 +127,11 @@ const initState = Object.freeze({
   usedAnswers: {}
 });
 
-const currentState = Object.assign({}, initState);
+let currentState;
+
+function init() {
+  currentState = Object.assign({}, initState);
+}
 
 function getRandomQuestion() {
   const answersInQuestion = 3;
@@ -66,7 +140,7 @@ function getRandomQuestion() {
 //  debugger;
   let randQ;
   do {
-    randQ = utils.randomInteger(0, currentState.questions.length-1);
+    randQ = utils.randomInteger(0, currentState.questions.length - 1);
     console.log(randQ);
   } while (currentState.usedQuestions[randQ]);
 
@@ -94,11 +168,13 @@ function getRandomQuestion() {
 
   function getRandomAnswerID() {
     let randA;
+    const usedAnswersNum = Object.keys(currentState.usedAnswers).length;
+    const answersNum = currentState.answers.length;
 
     do {
-      randA = utils.randomInteger(0, currentState.answers.length-1);
+      randA = utils.randomInteger(0, currentState.answers.length - 1);
       console.log(randA);
-    } while (currentState.usedAnswers[randA]);
+    } while (currentState.usedAnswers[randA] && usedAnswersNum < answersNum);
 
     return randA;
   }
@@ -110,5 +186,8 @@ function getRandomQuestion() {
 
 export default {
   getRandomQuestion,
-  currentState
+  get currentState() {
+    return currentState;
+  },
+  init
 };

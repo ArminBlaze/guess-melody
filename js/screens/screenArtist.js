@@ -1,3 +1,5 @@
+import '../animate.js';
+import '../player.js';
 import utils from '../utils.js';
 import data from '../data.js';
 import screensController from '../screensController.js';
@@ -24,7 +26,7 @@ const template = (question) => `<section class="main main--level main--level-art
     <div class="main-wrap">
       <div class="main-timer"></div>
 
-      <h2 class="title main-title">Кто исполняет эту песню?</h2>
+      <h2 class="title main-title">${question.text}</h2>
       <div class="player-wrapper"></div>
       <form class="main-list">
       ${[...Object.entries(question.answers)].map((answer, i) =>
@@ -62,11 +64,13 @@ mainElem.addEventListener(`change`, function (e) {
   console.log(`Правильный ответ: `,data.currentState.currentQuestion.correctAnswerId);
   console.log(`Текущий ответ: `,+answer);
   if(data.currentState.currentQuestion.correctAnswerId !== +answer) return;
-  alert(`Правильно!`);
+//  alert(`Правильно!`);
+  screensController.renderScreen(`screenGenre`);
 });
 
 
 function getElem() {
+  data.init();
   const question = data.getRandomQuestion();
   console.log(`Ответы в вопросе: `,question.answers);
   const audioFile = question.answers[question.correctAnswerId].audio;
