@@ -17,6 +17,7 @@
     "eslint": "3",
     "eslint-config-htmlacademy": "0.2.x",
     "gulp": "3",
+    "gulp-better-rollup": "^3.3.0",
     "gulp-csso": "3",
     "gulp-imagemin": "3",
     "gulp-plumber": "1",
