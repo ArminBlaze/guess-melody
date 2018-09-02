@@ -1,26 +1,27 @@
 import utils from './utils.js';
 
-const questions = [
-  {
-    text: `Кто исполняет эту песню?`,
-    correctAnswerId: 1,
-    answers: {}
-  },
-  {
-    text: `Чей это трек?`,
-    correctAnswerId: 2,
-    answers: {}
-  }
-];
+// const questions = [
+//  {
+//    text: `Кто исполняет эту песню?`,
+//    correctAnswerId: 1,
+//    answers: {}
+//  },
+//  {
+//    text: `Чей это трек?`,
+//    correctAnswerId: 2,
+//    answers: {}
+//  }
+// ];
+
+const Question = function (text, correctAnswerID, answers) {
+  this.text = text;
+  this.correctAnswerId = correctAnswerID;
+  this.answers = answers;
+};
+
+const questionsText = [`Кто это поёт?`, `Кто исполняет эту песню?`];
 
 const answers = [
-  {
-    name: `Andrew Huang`,
-    description: `Andrew Huang - это такой музыкант`,
-    image: ``,
-    audio: `../music/Blunt.mp3`,
-    genre: `electronic`
-  },
   {
     name: `Алсу`,
     description: `Алсу - певица такая`,
@@ -46,13 +47,6 @@ const answers = [
     name: `Земфира`,
     description: ``,
     image: ``,
-    audio: `../music/Zemfira-trafic.mp3`,
-    genre: `rock`
-  },
-  {
-    name: `Земфира`,
-    description: ``,
-    image: ``,
     audio: `../music/Zemfira - Romashki.mp3`,
     genre: `rock`
   },
@@ -64,31 +58,10 @@ const answers = [
     genre: `rock`
   },
   {
-    name: `Виктор Цой`,
-    description: ``,
-    image: ``,
-    audio: `../music/Gruppa krovi.mp3`,
-    genre: `rock`
-  },
-  {
-    name: `Виктор Цой`,
-    description: ``,
-    image: ``,
-    audio: `../music/Zvezda po imeni Solnce.mp3`,
-    genre: `rock`
-  },
-  {
     name: `ГДР`,
     description: ``,
     image: ``,
     audio: `../music/GDR - Jonatan.mp3`,
-    genre: `rock`
-  },
-  {
-    name: `Смысловые Галлюцинации`,
-    description: ``,
-    image: ``,
-    audio: `../music/Smislovie gallucinacii - Vecno molodoy.mp3`,
     genre: `rock`
   },
   {
@@ -121,9 +94,9 @@ const initState = Object.freeze({
   tableOfRecords: [],
   gameType: ``,
   lives: 3,
-  questions,
+  questionsText,
   answers,
-  usedQuestions: {},
+  lastUsedQuestion: null,
   usedAnswers: {}
 });
 
@@ -136,34 +109,40 @@ function init() {
 function getRandomQuestion() {
   const answersInQuestion = 3;
   // пикает случайный вопрос
-  // проверяет, что его нет в usedQuestions
 //  debugger;
   let randQ;
   do {
-    randQ = utils.randomInteger(0, currentState.questions.length - 1);
+    randQ = utils.randomInteger(0, currentState.questionsText.length - 1);
     console.log(randQ);
-  } while (currentState.usedQuestions[randQ]);
+  } while (currentState.lastUsedQuestion === randQ);
 
-  // записывает его в usedQuestions
-  currentState.usedQuestions[randQ] = true;
-  const question = currentState.questions[randQ];
-  currentState.currentQuestion = question;
+  currentState.lastUsedQuestion = randQ;
+  const questionText = currentState.questionsText[randQ];
 
-  // пикает в его ответы правильный ответ и два случайных ответа
-  addAnswers(question);
+  // берет случайный ответ и делает его правильным
+  let RandA = getRandomAnswerID();
 
-  function addAnswers(question) {
+  currentState.usedAnswers[RandA] = true;
+
+  // Создаём объект вопроса, передав туда: 1) Текст вопроса
+  // 2) id правильного ответа
+  // 3) объект с вопросами, создаваемый функцией
+  currentState.currentQuestion = new Question(questionText, RandA, addAnswers());
+
+
+//  пикает правильный ответ и два случайных ответа
+  function addAnswers() {
     // берем правильный ответ
-    question.answers[question.correctAnswerId] = currentState.answers[question.correctAnswerId];
-    currentState.usedAnswers[question.correctAnswerId] = true;
+    let answersForQuestion = {};
+    answersForQuestion[RandA] = currentState.answers[RandA];
 
     // берем 2 случайных
-    while (Object.keys(question.answers).length < answersInQuestion) {
+    while (Object.keys(answersForQuestion).length < answersInQuestion) {
       let answerID = getRandomAnswerID();
-      // записывает его в usedAnswers
-      question.answers[answerID] = currentState.answers[answerID];
-      currentState.usedAnswers[answerID] = true;
+      answersForQuestion[answerID] = currentState.answers[answerID];
     }
+
+    return answersForQuestion;
   }
 
   function getRandomAnswerID() {
@@ -179,7 +158,8 @@ function getRandomQuestion() {
     return randA;
   }
 
-  console.log(currentState.questions[randQ]);
+  console.log(currentState.currentQuestion);
+
   return currentState.currentQuestion;
 }
 

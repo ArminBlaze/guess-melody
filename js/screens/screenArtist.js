@@ -29,8 +29,7 @@ const template = (question) => `<section class="main main--level main--level-art
       <h2 class="title main-title">${question.text}</h2>
       <div class="player-wrapper"></div>
       <form class="main-list">
-      ${[...Object.entries(question.answers)].map((answer, i) =>
-                                               {
+      ${[...Object.entries(question.answers)].map((answer, i) => {
         console.log(answer);
         return `<div class="main-answer-wrapper">
           <input class="main-answer-r" type="radio" id="answer-${i}" name="answer" value="${answer[0]}" />
@@ -38,7 +37,7 @@ const template = (question) => `<section class="main main--level main--level-art
             <img class="main-answer-preview" src="">
             ${answer[1].name}
           </label>
-        </div>`
+        </div>`;
       }
 
         ).join(``)}
@@ -61,9 +60,11 @@ mainElem.addEventListener(`change`, function (e) {
 //  console.log(data.questions[questionNumber].answers[answer]);
 
 //  if(!answer in data.questions[questionNumber].answers) return;
-  console.log(`Правильный ответ: `,data.currentState.currentQuestion.correctAnswerId);
-  console.log(`Текущий ответ: `,+answer);
-  if(data.currentState.currentQuestion.correctAnswerId !== +answer) return;
+  console.log(`Правильный ответ: `, data.currentState.currentQuestion.correctAnswerId);
+  console.log(`Текущий ответ: `, +answer);
+  if (data.currentState.currentQuestion.correctAnswerId !== +answer) {
+    return;
+  }
 //  alert(`Правильно!`);
   screensController.renderScreen(`screenGenre`);
 });
@@ -72,7 +73,7 @@ mainElem.addEventListener(`change`, function (e) {
 function getElem() {
   data.init();
   const question = data.getRandomQuestion();
-  console.log(`Ответы в вопросе: `,question.answers);
+  console.log(`Ответы в вопросе: `, question.answers);
   const audioFile = question.answers[question.correctAnswerId].audio;
 
   const elem = utils.getElementFromTemplate(template(question));
