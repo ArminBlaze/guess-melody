@@ -113,7 +113,7 @@ function getRandomQuestion() {
   let randQ;
   do {
     randQ = utils.randomInteger(0, currentState.questionsText.length - 1);
-    console.log(randQ);
+//    console.log(randQ);
   } while (currentState.lastUsedQuestion === randQ);
 
   currentState.lastUsedQuestion = randQ;
@@ -152,13 +152,13 @@ function getRandomQuestion() {
 
     do {
       randA = utils.randomInteger(0, currentState.answers.length - 1);
-      console.log(randA);
+//      console.log(randA);
     } while (currentState.usedAnswers[randA] && usedAnswersNum < answersNum);
 
     return randA;
   }
 
-  console.log(currentState.currentQuestion);
+//  console.log(currentState.currentQuestion);
 
   return currentState.currentQuestion;
 }
