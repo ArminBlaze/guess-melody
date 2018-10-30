@@ -1,4 +1,5 @@
 import utils from './utils.js';
+import screensController from './screensController.js';
 
 // const questions = [
 //  {
@@ -97,13 +98,64 @@ const initState = Object.freeze({
   questionsText,
   answers,
   lastUsedQuestion: null,
-  usedAnswers: {}
+  usedAnswers: {},
+
+  startTimer() {
+    this.deleteTimer();
+
+    this.timer = setTimeout(function timerok() {
+      console.log(this);
+      this.time--;
+      // тут перерисовываем окошко времени
+      if (this.time > 0) {
+        this.timer = setTimeout(timerok.bind(this), 1000);
+      } else {
+        // конец игры, когда время вышло
+        endGame();
+      }
+    }.bind(this), 1000);
+  },
+
+  deleteTimer() {
+    if (this.timer) {
+      clearTimeout(this.timer);
+      this.timer = null;
+    }
+  }
 });
 
 let currentState;
 
 function init() {
   currentState = Object.assign({}, initState);
+  currentState.startTimer();
+  // должна убивать таймер, если он есть
+}
+
+function endGame() {
+  // Игра закончилась, отрисовываем статистику
+  alert(`Время вышло!`);
+}
+
+function getRandomScreenForQuestion() {
+  screensController.renderScreen(`screenArtist`);
+}
+
+function checkGameState(state) {
+  if (state.lives < 1) {
+  // жизни закончились, поражение
+  } else if (state.usedAnswers.length >= 5) {
+    // вопросы закончились, победа
+  } else {
+//    просто вызываем экран вопроса
+    getRandomScreenForQuestion();
+  }
+}
+
+function changeLives(state, num) {
+  let newState = Object.assign({}, state);
+  newState.lives += num;
+  return newState;
 }
 
 function getRandomQuestion() {
@@ -169,5 +221,7 @@ export default {
   get currentState() {
     return currentState;
   },
-  init
+  init,
+  checkGameState,
+  changeLives
 };

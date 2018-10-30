@@ -48,6 +48,7 @@ const template = (question) => `<section class="main main--level main--level-art
 
 let mainElem = document.querySelector(`.main`);
 mainElem.addEventListener(`change`, function (e) {
+  let state = data.currentState;
 //  console.log(e.target);
 
   // берем value инпута
@@ -62,16 +63,22 @@ mainElem.addEventListener(`change`, function (e) {
 //  if(!answer in data.questions[questionNumber].answers) return;
 //  console.log(`Правильный ответ: `, data.currentState.currentQuestion.correctAnswerId);
 //  console.log(`Текущий ответ: `, +answer);
-  if (data.currentState.currentQuestion.correctAnswerId !== +answer) {
-    return;
+  if (state.currentQuestion.correctAnswerId !== +answer) {
+    // если ответ неправильный - убираем одну жизнь
+    alert(`Неправильно`);
+    state = data.changeLives(state, -1);
+    console.log(state.lives);
+  } else {
+    alert(`Правильно!`);
   }
-//  alert(`Правильно!`);
-  screensController.renderScreen(`screenGenre`);
+
+  data.checkGameState(state);
+//  screensController.renderScreen(`screenGenre`);
 });
 
 
 function getElem() {
-  data.init();
+
   const question = data.getRandomQuestion();
 //  console.log(`Ответы в вопросе: `, question.answers);
   const audioFile = question.answers[question.correctAnswerId].audio;
@@ -79,7 +86,7 @@ function getElem() {
   const elem = utils.getElementFromTemplate(template(question));
 
   let playerWrapper = elem.querySelector(`.player-wrapper`);
-  window.initializePlayer(playerWrapper, audioFile);
+  window.initializePlayer(playerWrapper, audioFile, `autoplay`, false);
 
 //  const buttons = elem.querySelectorAll(`.main-answer`);
 //  buttons.forEach((item) => {

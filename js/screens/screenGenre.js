@@ -36,7 +36,6 @@ const template = (question) => `<section class="main main--level main--level-gen
   </section>`;
 
 function getElem() {
-  data.init();
   const question = data.getRandomQuestion();
   console.log(`Ответы в вопросе: `,question.answers);
 
