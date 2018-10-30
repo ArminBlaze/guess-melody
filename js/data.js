@@ -142,10 +142,14 @@ function getRandomScreenForQuestion() {
 }
 
 function checkGameState(state) {
-  if (state.lives < 1) {
+  currentState = state;
+  console.log(Object.keys(currentState.usedAnswers).length, " Сколько было вопросов");
+  if (currentState.lives < 1) {
   // жизни закончились, поражение
-  } else if (state.usedAnswers.length >= 5) {
+    alert(`Жизни закончились. Поражение.`);
+  } else if (Object.keys(currentState.usedAnswers).length >= 5) {
     // вопросы закончились, победа
+    alert(`Победа! Вы ответили на все вопросы!`);
   } else {
 //    просто вызываем экран вопроса
     getRandomScreenForQuestion();
