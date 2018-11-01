@@ -99,38 +99,45 @@ const initState = Object.freeze({
   answers,
   lastUsedQuestion: null,
   usedAnswers: {},
-
-  startTimer() {
-    this.deleteTimer();
-
-    this.timer = setTimeout(function timerok() {
-      console.log(this);
-      this.time--;
-      // тут перерисовываем окошко времени
-      if (this.time > 0) {
-        this.timer = setTimeout(timerok.bind(this), 1000);
-      } else {
-        // конец игры, когда время вышло
-        endGame();
-      }
-    }.bind(this), 1000);
-  },
-
-  deleteTimer() {
-    if (this.timer) {
-      clearTimeout(this.timer);
-      this.timer = null;
-    }
-  }
+	correctAnswers: 0,
 });
 
 let currentState;
 
+
 function init() {
   currentState = Object.assign({}, initState);
-  currentState.startTimer();
+//  startTimer();
   // должна убивать таймер, если он есть
 }
+
+let timer = null;
+
+ function startTimer(state) {
+    deleteTimer();
+
+    timer = setTimeout(function timerok() {
+      state.time--;
+      console.log(state.time);
+      // тут перерисовываем окошко времени
+      if (state.time > 0) {
+        timer = setTimeout(timerok, 1000);
+      } else {
+        // конец игры, когда время вышло
+        endGame();
+      }
+    }, 1000);
+  }
+
+  function deleteTimer() {
+//		debugger;
+		console.log(timer);
+		console.log(`Удаляю таймер`);
+    if (timer) {
+      clearTimeout(timer);
+      timer = null;
+    }
+  }
 
 function endGame() {
   // Игра закончилась, отрисовываем статистику
@@ -143,13 +150,16 @@ function getRandomScreenForQuestion() {
 
 function checkGameState(state) {
   currentState = state;
+	deleteTimer();
   console.log(Object.keys(currentState.usedAnswers).length, " Сколько было вопросов");
   if (currentState.lives < 1) {
   // жизни закончились, поражение
     alert(`Жизни закончились. Поражение.`);
+		screensController.renderScreen(`screenLose`);
   } else if (Object.keys(currentState.usedAnswers).length >= 5) {
     // вопросы закончились, победа
     alert(`Победа! Вы ответили на все вопросы!`);
+		screensController.renderScreen(`screenWin`);
   } else {
 //    просто вызываем экран вопроса
     getRandomScreenForQuestion();
@@ -160,6 +170,18 @@ function changeLives(state, num) {
   let newState = Object.assign({}, state);
   newState.lives += num;
   return newState;
+}
+
+function changeCorrectAnswers(state, num) {
+	let newState = Object.assign({}, state);
+  newState.correctAnswers += num;
+  return newState;
+}
+
+function calculateStatistic() {
+	let time = initState.time - currentState.time;
+	let score = currentState.correctAnswers;
+	return {time, score};
 }
 
 function getRandomQuestion() {
@@ -227,5 +249,9 @@ export default {
   },
   init,
   checkGameState,
-  changeLives
+  changeLives,
+	calculateStatistic,
+	changeCorrectAnswers,
+	startTimer,
+	deleteTimer
 };

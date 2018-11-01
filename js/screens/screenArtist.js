@@ -4,6 +4,8 @@ import utils from '../utils.js';
 import data from '../data.js';
 import screensController from '../screensController.js';
 
+let state;
+
 // let questionNumber = 1;
 
 const headerTemplate = `
@@ -48,7 +50,7 @@ const template = (question) => `<section class="main main--level main--level-art
 
 let mainElem = document.querySelector(`.main`);
 mainElem.addEventListener(`change`, function (e) {
-  let state = data.currentState;
+  
 //  console.log(e.target);
 
   // берем value инпута
@@ -78,7 +80,7 @@ mainElem.addEventListener(`change`, function (e) {
 
 
 function getElem() {
-
+	state = data.currentState;
   const question = data.getRandomQuestion();
 //  console.log(`Ответы в вопросе: `, question.answers);
   const audioFile = question.answers[question.correctAnswerId].audio;
@@ -87,6 +89,7 @@ function getElem() {
 
   let playerWrapper = elem.querySelector(`.player-wrapper`);
   window.initializePlayer(playerWrapper, audioFile, `autoplay`, false);
+	data.startTimer(state);
 
 //  const buttons = elem.querySelectorAll(`.main-answer`);
 //  buttons.forEach((item) => {
