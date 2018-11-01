@@ -99,16 +99,16 @@ const initState = Object.freeze({
   answers,
   lastUsedQuestion: null,
   usedAnswers: {},
-	correctAnswers: 0,
+	correctAnswers: 0
 });
 
 let currentState;
 
 
 function init() {
-  currentState = Object.assign({}, initState);
-//  startTimer();
-  // должна убивать таймер, если он есть
+	currentState = JSON.parse(JSON.stringify(initState))
+//  currentState = Object.assign({}, initState);
+	console.log(currentState);
 }
 
 let timer = null;
@@ -179,8 +179,10 @@ function changeCorrectAnswers(state, num) {
 }
 
 function calculateStatistic() {
+	
 	let time = initState.time - currentState.time;
 	let score = currentState.correctAnswers;
+	console.log(time, score);
 	return {time, score};
 }
 
