@@ -1,19 +1,6 @@
 import utils from './utils.js';
 import screensController from './screensController.js';
 
-// const questions = [
-//  {
-//    text: `Кто исполняет эту песню?`,
-//    correctAnswerId: 1,
-//    answers: {}
-//  },
-//  {
-//    text: `Чей это трек?`,
-//    correctAnswerId: 2,
-//    answers: {}
-//  }
-// ];
-
 const Question = function (text, correctAnswerID, answers) {
   this.text = text;
   this.correctAnswerId = correctAnswerID;
@@ -99,45 +86,44 @@ const initState = Object.freeze({
   answers,
   lastUsedQuestion: null,
   usedAnswers: {},
-	correctAnswers: 0
+  correctAnswers: 0
 });
 
 let currentState;
 
-
 function init() {
-	currentState = JSON.parse(JSON.stringify(initState))
+  currentState = JSON.parse(JSON.stringify(initState));
 //  currentState = Object.assign({}, initState);
-	console.log(currentState);
+  console.log(currentState);
 }
 
 let timer = null;
 
- function startTimer(state) {
-    deleteTimer();
+function startTimer(state) {
+  deleteTimer();
 
-    timer = setTimeout(function timerok() {
-      state.time--;
-      console.log(state.time);
+  timer = setTimeout(function timerok() {
+    state.time--;
+    console.log(state.time);
       // тут перерисовываем окошко времени
-      if (state.time > 0) {
-        timer = setTimeout(timerok, 1000);
-      } else {
+    if (state.time > 0) {
+      timer = setTimeout(timerok, 1000);
+    } else {
         // конец игры, когда время вышло
-        endGame();
-      }
-    }, 1000);
-  }
-
-  function deleteTimer() {
-//		debugger;
-		console.log(timer);
-		console.log(`Удаляю таймер`);
-    if (timer) {
-      clearTimeout(timer);
-      timer = null;
+      endGame();
     }
+  }, 1000);
+}
+
+function deleteTimer() {
+//		debugger;
+  console.log(timer);
+  console.log(`Удаляю таймер`);
+  if (timer) {
+    clearTimeout(timer);
+    timer = null;
   }
+}
 
 function endGame() {
   // Игра закончилась, отрисовываем статистику
@@ -150,16 +136,16 @@ function getRandomScreenForQuestion() {
 
 function checkGameState(state) {
   currentState = state;
-	deleteTimer();
-  console.log(Object.keys(currentState.usedAnswers).length, " Сколько было вопросов");
+  deleteTimer();
+  console.log(Object.keys(currentState.usedAnswers).length, ` Сколько было вопросов`);
   if (currentState.lives < 1) {
   // жизни закончились, поражение
     alert(`Жизни закончились. Поражение.`);
-		screensController.renderScreen(`screenLose`);
+    screensController.renderScreen(`screenLose`);
   } else if (Object.keys(currentState.usedAnswers).length >= 5) {
     // вопросы закончились, победа
     alert(`Победа! Вы ответили на все вопросы!`);
-		screensController.renderScreen(`screenWin`);
+    screensController.renderScreen(`screenWin`);
   } else {
 //    просто вызываем экран вопроса
     getRandomScreenForQuestion();
@@ -173,17 +159,23 @@ function changeLives(state, num) {
 }
 
 function changeCorrectAnswers(state, num) {
-	let newState = Object.assign({}, state);
+  let newState = Object.assign({}, state);
   newState.correctAnswers += num;
   return newState;
 }
 
 function calculateStatistic() {
-	
-	let time = initState.time - currentState.time;
-	let score = currentState.correctAnswers;
-	console.log(time, score);
-	return {time, score};
+  let passedTime = calculatePassedTime();
+  const minutes = Math.floor(passedTime / 60 / 1000);
+  const seconds = (`0` + (passedTime % 60)).slice(-2);
+
+  let score = currentState.correctAnswers;
+  console.log(passedTime, score);
+  return {time: {minutes, seconds}, score};
+}
+
+function calculatePassedTime() {
+  return initState.time - currentState.time;
 }
 
 function getRandomQuestion() {
@@ -249,11 +241,14 @@ export default {
   get currentState() {
     return currentState;
   },
+  get initState() {
+    return JSON.parse(JSON.stringify(initState));
+  },
   init,
   checkGameState,
   changeLives,
-	calculateStatistic,
-	changeCorrectAnswers,
-	startTimer,
-	deleteTimer
+  calculateStatistic,
+  changeCorrectAnswers,
+  startTimer,
+  deleteTimer
 };
