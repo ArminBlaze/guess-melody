@@ -72,6 +72,7 @@ mainElem.addEventListener(`change`, function (e) {
     console.log(state.lives);
   } else {
     alert(`Правильно!`);
+		state = data.changeCorrectAnswers(state, +1);
   }
 
   data.checkGameState(state);
