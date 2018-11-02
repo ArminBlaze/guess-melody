@@ -75,25 +75,32 @@ const answers = [
   }
 ];
 
+const tableOfRecords = [
+  {time: 20, answers: 8},
+  {time: 50, answers: 7},
+  {time: 32, answers: 10},
+  {time: 20, answers: 10},
+  {time: 44, answers: 10}
+];
+
 const initState = Object.freeze({
   time: 120,
   screen: `screenWelcome`,
   playerName: ``,
-  tableOfRecords: [],
+  tableOfRecords,
   gameType: ``,
   lives: 3,
   questionsText,
   answers,
   lastUsedQuestion: null,
   usedAnswers: {},
-  correctAnswers: 0
+  correctAnswers: 0,
 });
 
 let currentState;
 
 function init() {
   currentState = JSON.parse(JSON.stringify(initState));
-//  currentState = Object.assign({}, initState);
   console.log(currentState);
 }
 
@@ -113,8 +120,8 @@ function startTimer(state, elem) {
       // тут перерисовываем окошко времени
     let time = formatTime(state.time);
 
-    elem.mins.innerHTML = time.formattedMinutes;
-    elem.secs.innerHTML = time.formattedSeconds;
+    elem.mins.innerHTML = time.minutes;
+    elem.secs.innerHTML = time.seconds;
 
     if (state.time > 0) {
       timer = setTimeout(timerok, 1000);
@@ -126,7 +133,6 @@ function startTimer(state, elem) {
 }
 
 function deleteTimer() {
-//		debugger;
   console.log(timer);
   console.log(`Удаляю таймер`);
   if (timer) {
@@ -143,26 +149,11 @@ function formatTime(seconds) {
   const formattedMinutes = Math.floor(seconds / 60);
   const formattedSeconds = (`0` + (seconds % 60)).slice(-2);
 
-  return {formattedMinutes, formattedSeconds};
+  return {minutes: formattedMinutes, seconds: formattedSeconds};
 }
-
 
 // //////////////////// END OF TIME FUNCTIONS
 
-function gameLose(str) {
-  // Игра закончилась, отрисовываем статистику
-  alert(str);
-  screensController.renderScreen(`screenLose`);
-}
-
-function gameWin(str) {
-  alert(str);
-  screensController.renderScreen(`screenWin`);
-}
-
-function getRandomScreenForQuestion() {
-  screensController.renderScreen(`screenArtist`);
-}
 
 function checkGameState(state) {
   currentState = state;
@@ -180,6 +171,41 @@ function checkGameState(state) {
   }
 }
 
+function gameLose(str) {
+  // Игра закончилась, отрисовываем статистику
+  alert(str);
+  screensController.renderScreen(`screenLose`);
+}
+
+function gameWin(str) {
+  alert(str);
+  screensController.renderScreen(`screenWin`);
+}
+
+function getRandomScreenForQuestion() {
+  screensController.renderScreen(`screenArtist`);
+}
+
+function calculateStatistic() {
+  let passedTime = calculatePassedTime();
+  let formattedTime = formatTime(passedTime);
+
+  let score = currentState.correctAnswers;
+
+  writeRecord({time: passedTime, answers: score});
+  console.log(passedTime, score);
+
+  return {time: formattedTime, score};
+}
+
+function writeRecord(record) {
+  tableOfRecords.push(record);
+
+  debugger;
+  console.log(tableOfRecords);
+  sortRecords();
+}
+
 function changeLives(state, num) {
   let newState = Object.assign({}, state);
   newState.lives += num;
@@ -192,20 +218,29 @@ function changeCorrectAnswers(state, num) {
   return newState;
 }
 
-function calculateStatistic() {
-  let passedTime = calculatePassedTime();
-  let formattedTime = formatTime(passedTime);
+function sortRecords() {
+  tableOfRecords.sort(function (a, b) {
+    let rankDiff = b.answers - a.answers;
+    if (rankDiff === 0) {
+      rankDiff = namesComparator(a.time, b.time);
+    }
 
-  let score = currentState.correctAnswers;
-  console.log(passedTime, score);
-  return {formattedTime, score};
+    return rankDiff;
+  });
+
+  debugger;
+  console.log(tableOfRecords);
+}
+
+  // для устойчивости массива, сравниваем по имени
+function namesComparator(a, b) {
+  return (a > b) ? 1 : -1;
 }
 
 
 function getRandomQuestion() {
   const answersInQuestion = 3;
   // пикает случайный вопрос
-//  debugger;
   let randQ;
   do {
     randQ = utils.randomInteger(0, currentState.questionsText.length - 1);
@@ -274,5 +309,6 @@ export default {
   calculateStatistic,
   changeCorrectAnswers,
   startTimer,
-  deleteTimer
+  deleteTimer,
+  sortRecords
 };

@@ -13,11 +13,11 @@ const template = (stats) => `<section class="main main--result">
 
 function getElem() {
 //	const question = data.getRandomQuestion();
-	let stats = data.calculateStatistic();
-	console.log(stats);
-	
+  let stats = data.calculateStatistic();
+  console.log(stats);
+
   const elem = utils.getElementFromTemplate(template(stats));
-	
+
   const button = elem.querySelector(`.main-replay`);
   button.onclick = function () {
     screensController.renderScreen(`screenWelcome`);
