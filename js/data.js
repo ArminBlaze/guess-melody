@@ -97,20 +97,30 @@ function init() {
   console.log(currentState);
 }
 
+
+// /////////////////// TIME FUNCTIONS
+
 let timer = null;
 
-function startTimer(state) {
+function startTimer(state, elem) {
   deleteTimer();
+  const mins = elem.mins;
+  const secs = elem.secs;
 
   timer = setTimeout(function timerok() {
     state.time--;
     console.log(state.time);
       // тут перерисовываем окошко времени
+    let time = formatTime(state.time);
+
+    elem.mins.innerHTML = time.formattedMinutes;
+    elem.secs.innerHTML = time.formattedSeconds;
+
     if (state.time > 0) {
       timer = setTimeout(timerok, 1000);
     } else {
         // конец игры, когда время вышло
-      endGame();
+      gameLose(`Время вышло!`);
     }
   }, 1000);
 }
@@ -125,9 +135,29 @@ function deleteTimer() {
   }
 }
 
-function endGame() {
+function calculatePassedTime() {
+  return initState.time - currentState.time;
+}
+
+function formatTime(seconds) {
+  const formattedMinutes = Math.floor(seconds / 60);
+  const formattedSeconds = (`0` + (seconds % 60)).slice(-2);
+
+  return {formattedMinutes, formattedSeconds};
+}
+
+
+// //////////////////// END OF TIME FUNCTIONS
+
+function gameLose(str) {
   // Игра закончилась, отрисовываем статистику
-  alert(`Время вышло!`);
+  alert(str);
+  screensController.renderScreen(`screenLose`);
+}
+
+function gameWin(str) {
+  alert(str);
+  screensController.renderScreen(`screenWin`);
 }
 
 function getRandomScreenForQuestion() {
@@ -140,12 +170,10 @@ function checkGameState(state) {
   console.log(Object.keys(currentState.usedAnswers).length, ` Сколько было вопросов`);
   if (currentState.lives < 1) {
   // жизни закончились, поражение
-    alert(`Жизни закончились. Поражение.`);
-    screensController.renderScreen(`screenLose`);
+    gameLose(`Жизни закончились. Поражение.`);
   } else if (Object.keys(currentState.usedAnswers).length >= 5) {
     // вопросы закончились, победа
-    alert(`Победа! Вы ответили на все вопросы!`);
-    screensController.renderScreen(`screenWin`);
+    gameWin(`Победа! Вы ответили на все вопросы!`);
   } else {
 //    просто вызываем экран вопроса
     getRandomScreenForQuestion();
@@ -166,17 +194,13 @@ function changeCorrectAnswers(state, num) {
 
 function calculateStatistic() {
   let passedTime = calculatePassedTime();
-  const minutes = Math.floor(passedTime / 60 / 1000);
-  const seconds = (`0` + (passedTime % 60)).slice(-2);
+  let formattedTime = formatTime(passedTime);
 
   let score = currentState.correctAnswers;
   console.log(passedTime, score);
-  return {time: {minutes, seconds}, score};
+  return {formattedTime, score};
 }
 
-function calculatePassedTime() {
-  return initState.time - currentState.time;
-}
 
 function getRandomQuestion() {
   const answersInQuestion = 3;

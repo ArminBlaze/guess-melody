@@ -50,7 +50,7 @@ const template = (question) => `<section class="main main--level main--level-art
 
 let mainElem = document.querySelector(`.main`);
 mainElem.addEventListener(`change`, function (e) {
-  
+
 //  console.log(e.target);
 
   // берем value инпута
@@ -88,9 +88,13 @@ function getElem() {
 
   const elem = utils.getElementFromTemplate(template(question));
 
+  const timerElem = elem.querySelector(`.timer-value`);
+  const timerMin = timerElem.querySelector(`.timer-value-mins`);
+  const timerSec = timerElem.querySelector(`.timer-value-secs`);
+
   let playerWrapper = elem.querySelector(`.player-wrapper`);
   window.initializePlayer(playerWrapper, audioFile, `autoplay`, false);
-	data.startTimer(state);
+	data.startTimer(state, {mins: timerMin, secs: timerSec});
 
 //  const buttons = elem.querySelectorAll(`.main-answer`);
 //  buttons.forEach((item) => {
