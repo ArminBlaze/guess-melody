@@ -1,5 +1,5 @@
 import utils from './utils.js';
-import screensController from './screensController.js';
+// import screensController from './screensController.js';
 
 const Question = function (text, correctAnswerID, answers) {
   this.text = text;
@@ -174,16 +174,19 @@ function checkGameState(state) {
 function gameLose(str) {
   // Игра закончилась, отрисовываем статистику
   alert(str);
-  screensController.renderScreen(`screenLose`);
+//  screensController.renderScreen(`screenLose`);
+  utils.generateEvent(undefined, `renderScreen`, `screenLose`);
 }
 
 function gameWin(str) {
   alert(str);
-  screensController.renderScreen(`screenWin`);
+//  screensController.renderScreen(`screenWin`);
+  utils.generateEvent(undefined, `renderScreen`, `screenWin`);
 }
 
 function getRandomScreenForQuestion() {
-  screensController.renderScreen(`screenArtist`);
+//  screensController.renderScreen(`screenArtist`);
+  utils.generateEvent(undefined, `renderScreen`, `screenArtist`);
 }
 
 function calculateStatistic() {

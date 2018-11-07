@@ -1,8 +1,8 @@
-//import '../animate.js';
-//import '../player.js';
+import '../animate.js';
+import '../player.js';
 import utils from '../utils.js';
 import data from '../data.js';
-import screensController from '../screensController.js';
+// import screensController from '../screensController.js';
 
 let state;
 
