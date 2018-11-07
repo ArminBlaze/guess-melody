@@ -1,5 +1,5 @@
-import '../animate.js';
-import '../player.js';
+//import '../animate.js';
+//import '../player.js';
 import utils from '../utils.js';
 import data from '../data.js';
 import screensController from '../screensController.js';
@@ -72,7 +72,7 @@ mainElem.addEventListener(`change`, function (e) {
     console.log(state.lives);
   } else {
     alert(`Правильно!`);
-		state = data.changeCorrectAnswers(state, +1);
+    state = data.changeCorrectAnswers(state, +1);
   }
 
   data.checkGameState(state);
@@ -81,7 +81,7 @@ mainElem.addEventListener(`change`, function (e) {
 
 
 function getElem() {
-	state = data.currentState;
+  state = data.currentState;
   const question = data.getRandomQuestion();
 //  console.log(`Ответы в вопросе: `, question.answers);
   const audioFile = question.answers[question.correctAnswerId].audio;
@@ -94,7 +94,7 @@ function getElem() {
 
   let playerWrapper = elem.querySelector(`.player-wrapper`);
   window.initializePlayer(playerWrapper, audioFile, `autoplay`, false);
-	data.startTimer(state, {mins: timerMin, secs: timerSec});
+  data.startTimer(state, {mins: timerMin, secs: timerSec});
 
 //  const buttons = elem.querySelectorAll(`.main-answer`);
 //  buttons.forEach((item) => {

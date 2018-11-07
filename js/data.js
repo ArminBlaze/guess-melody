@@ -201,7 +201,6 @@ function calculateStatistic() {
 function writeRecord(record) {
   tableOfRecords.push(record);
 
-  debugger;
   console.log(tableOfRecords);
   sortRecords();
 }
@@ -228,7 +227,6 @@ function sortRecords() {
     return rankDiff;
   });
 
-  debugger;
   console.log(tableOfRecords);
 }
 
@@ -310,5 +308,6 @@ export default {
   changeCorrectAnswers,
   startTimer,
   deleteTimer,
-  sortRecords
+  sortRecords,
+  calculatePassedTime
 };
