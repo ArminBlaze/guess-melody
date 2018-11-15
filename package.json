@@ -7,11 +7,14 @@
     "eslint": "eslint js/",
     "build": "gulp build",
     "start": "gulp serve",
-    "test": "npm run eslint && gulp test"
+    "test": "gulp test"
   },
   "devDependencies": {
     "autoprefixer": "6",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
+    "babel-register": "^6.26.0",
     "browser-sync": "2",
+    "coffeescript": "^2.3.1",
     "css-mqpacker": "6",
     "del": "2",
     "eslint": "3",
@@ -20,6 +23,7 @@
     "gulp-better-rollup": "^3.3.0",
     "gulp-csso": "3",
     "gulp-imagemin": "3",
+    "gulp-mocha": "^6.0.0",
     "gulp-plumber": "1",
     "gulp-postcss": "7",
     "gulp-rename": "1",
@@ -28,5 +32,10 @@
   },
   "engines": {
     "node": "6.10"
+  },
+  "babel": {
+    "plugins": [
+      "transform-es2015-modules-commonjs"
+    ]
   }
 }

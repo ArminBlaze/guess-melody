@@ -14,10 +14,17 @@ const screens = {
 
 const main = document.querySelector(`.main`);
 
+
+
+
 // init();
 
 function init() {
   renderScreen(`screenWelcome`);
+
+  document.addEventListener(`screensController`, function (e) {
+    renderScreen(e.detail);
+  });
 }
 
 function renderScreen(name) {

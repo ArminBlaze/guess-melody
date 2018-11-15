@@ -2,9 +2,11 @@ import '../animate.js';
 import '../player.js';
 import utils from '../utils.js';
 import data from '../data.js';
-import screensController from '../screensController.js';
+// import screensController from '../screensController.js';
 
-let questionNumber = 1;
+let state;
+
+// let questionNumber = 1;
 
 const headerTemplate = `
     <svg xmlns="http://www.w3.org/2000/svg" class="timer" viewBox="0 0 780 780">
@@ -30,7 +32,7 @@ const template = (question) => `<section class="main main--level main--level-art
       <div class="player-wrapper"></div>
       <form class="main-list">
       ${[...Object.entries(question.answers)].map((answer, i) => {
-        console.log(answer);
+//        console.log(answer);
         return `<div class="main-answer-wrapper">
           <input class="main-answer-r" type="radio" id="answer-${i}" name="answer" value="${answer[0]}" />
           <label class="main-answer" for="answer-${i}">
@@ -48,38 +50,51 @@ const template = (question) => `<section class="main main--level main--level-art
 
 let mainElem = document.querySelector(`.main`);
 mainElem.addEventListener(`change`, function (e) {
-  console.log(e.target);
+
+//  console.log(e.target);
 
   // берем value инпута
   let answer = e.target.value;
 
-  console.log(answer);
+//  console.log(answer);
 
   // проверяем правильный ли это ответ
 //  console.log(answer in data.questions[questionNumber].answers);
 //  console.log(data.questions[questionNumber].answers[answer]);
 
 //  if(!answer in data.questions[questionNumber].answers) return;
-  console.log(`Правильный ответ: `, data.currentState.currentQuestion.correctAnswerId);
-  console.log(`Текущий ответ: `, +answer);
-  if (data.currentState.currentQuestion.correctAnswerId !== +answer) {
-    return;
+//  console.log(`Правильный ответ: `, data.currentState.currentQuestion.correctAnswerId);
+//  console.log(`Текущий ответ: `, +answer);
+  if (state.currentQuestion.correctAnswerId !== +answer) {
+    // если ответ неправильный - убираем одну жизнь
+    alert(`Неправильно`);
+    state = data.changeLives(state, -1);
+    console.log(state.lives);
+  } else {
+    alert(`Правильно!`);
+    state = data.changeCorrectAnswers(state, +1);
   }
-//  alert(`Правильно!`);
-  screensController.renderScreen(`screenGenre`);
+
+  data.checkGameState(state);
+//  screensController.renderScreen(`screenGenre`);
 });
 
 
 function getElem() {
-  data.init();
+  state = data.currentState;
   const question = data.getRandomQuestion();
-  console.log(`Ответы в вопросе: `, question.answers);
+//  console.log(`Ответы в вопросе: `, question.answers);
   const audioFile = question.answers[question.correctAnswerId].audio;
 
   const elem = utils.getElementFromTemplate(template(question));
 
+  const timerElem = elem.querySelector(`.timer-value`);
+  const timerMin = timerElem.querySelector(`.timer-value-mins`);
+  const timerSec = timerElem.querySelector(`.timer-value-secs`);
+
   let playerWrapper = elem.querySelector(`.player-wrapper`);
-  window.initializePlayer(playerWrapper, audioFile);
+  window.initializePlayer(playerWrapper, audioFile, `autoplay`, false);
+  data.startTimer(state, {mins: timerMin, secs: timerSec});
 
 //  const buttons = elem.querySelectorAll(`.main-answer`);
 //  buttons.forEach((item) => {

@@ -1,17 +1,5 @@
 import utils from './utils.js';
-
-// const questions = [
-//  {
-//    text: `Кто исполняет эту песню?`,
-//    correctAnswerId: 1,
-//    answers: {}
-//  },
-//  {
-//    text: `Чей это трек?`,
-//    correctAnswerId: 2,
-//    answers: {}
-//  }
-// ];
+// import screensController from './screensController.js';
 
 const Question = function (text, correctAnswerID, answers) {
   this.text = text;
@@ -87,33 +75,181 @@ const answers = [
   }
 ];
 
+const tableOfRecords = [
+  {time: 20, answers: 8},
+  {time: 50, answers: 7},
+  {time: 32, answers: 10},
+  {time: 20, answers: 10},
+  {time: 44, answers: 10}
+];
+
 const initState = Object.freeze({
   time: 120,
   screen: `screenWelcome`,
   playerName: ``,
-  tableOfRecords: [],
+  tableOfRecords,
   gameType: ``,
   lives: 3,
   questionsText,
   answers,
   lastUsedQuestion: null,
-  usedAnswers: {}
+  usedAnswers: {},
+  correctAnswers: 0,
 });
 
 let currentState;
 
 function init() {
-  currentState = Object.assign({}, initState);
+  currentState = JSON.parse(JSON.stringify(initState));
+  console.log(currentState);
 }
+
+
+// /////////////////// TIME FUNCTIONS
+
+let timer = null;
+
+function startTimer(state, elem) {
+  deleteTimer();
+  const mins = elem.mins;
+  const secs = elem.secs;
+
+  timer = setTimeout(function timerok() {
+    state.time--;
+    console.log(state.time);
+      // тут перерисовываем окошко времени
+    let time = formatTime(state.time);
+
+    elem.mins.innerHTML = time.minutes;
+    elem.secs.innerHTML = time.seconds;
+
+    if (state.time > 0) {
+      timer = setTimeout(timerok, 1000);
+    } else {
+        // конец игры, когда время вышло
+      gameLose(`Время вышло!`);
+    }
+  }, 1000);
+}
+
+function deleteTimer() {
+  console.log(timer);
+  console.log(`Удаляю таймер`);
+  if (timer) {
+    clearTimeout(timer);
+    timer = null;
+  }
+}
+
+function calculatePassedTime() {
+  return initState.time - currentState.time;
+}
+
+function formatTime(seconds) {
+  const formattedMinutes = Math.floor(seconds / 60);
+  const formattedSeconds = (`0` + (seconds % 60)).slice(-2);
+
+  return {minutes: formattedMinutes, seconds: formattedSeconds};
+}
+
+// //////////////////// END OF TIME FUNCTIONS
+
+
+function checkGameState(state) {
+  currentState = state;
+  deleteTimer();
+  console.log(Object.keys(currentState.usedAnswers).length, ` Сколько было вопросов`);
+  console.log(currentState.usedAnswers, ` Сколько было вопросов`);
+  if (currentState.lives < 1) {
+  // жизни закончились, поражение
+    gameLose(`Жизни закончились. Поражение.`);
+  } else if (Object.keys(currentState.usedAnswers).length >= 5) {
+    // вопросы закончились, победа
+    gameWin(`Победа! Вы ответили на все вопросы!`);
+  } else {
+//    просто вызываем экран вопроса
+    getRandomScreenForQuestion();
+  }
+}
+
+function gameLose(str) {
+  // Игра закончилась, отрисовываем статистику
+  alert(str);
+//  screensController.renderScreen(`screenLose`);
+  utils.generateEvent(undefined, `screensController`, `screenLose`);
+}
+
+function gameWin(str) {
+  alert(str);
+//  screensController.renderScreen(`screenWin`);
+  utils.generateEvent(undefined, `screensController`, `screenWin`);
+}
+
+function getRandomScreenForQuestion() {
+//  screensController.renderScreen(`screenArtist`);
+  utils.generateEvent(undefined, `screensController`, `screenArtist`);
+}
+
+function calculateStatistic() {
+  let passedTime = calculatePassedTime();
+  let formattedTime = formatTime(passedTime);
+
+  let score = currentState.correctAnswers;
+
+  writeRecord({time: passedTime, answers: score});
+  console.log(passedTime, score);
+
+  return {time: formattedTime, score};
+}
+
+function writeRecord(record) {
+  tableOfRecords.push(record);
+
+  console.log(tableOfRecords);
+  sortRecords();
+}
+
+function changeLives(state, num) {
+  let newState = Object.assign({}, state);
+  newState.lives += num;
+  if (newState.lives < 0) {
+    newState.lives = 0;
+  }
+  return newState;
+}
+
+function changeCorrectAnswers(state, num) {
+  let newState = Object.assign({}, state);
+  newState.correctAnswers += num;
+  return newState;
+}
+
+function sortRecords() {
+  tableOfRecords.sort(function (a, b) {
+    let rankDiff = b.answers - a.answers;
+    if (rankDiff === 0) {
+      rankDiff = namesComparator(a.time, b.time);
+    }
+
+    return rankDiff;
+  });
+
+  console.log(tableOfRecords);
+}
+
+  // для устойчивости массива, сравниваем по имени
+function namesComparator(a, b) {
+  return (a > b) ? 1 : -1;
+}
+
 
 function getRandomQuestion() {
   const answersInQuestion = 3;
   // пикает случайный вопрос
-//  debugger;
   let randQ;
   do {
     randQ = utils.randomInteger(0, currentState.questionsText.length - 1);
-    console.log(randQ);
+//    console.log(randQ);
   } while (currentState.lastUsedQuestion === randQ);
 
   currentState.lastUsedQuestion = randQ;
@@ -152,13 +288,13 @@ function getRandomQuestion() {
 
     do {
       randA = utils.randomInteger(0, currentState.answers.length - 1);
-      console.log(randA);
+//      console.log(randA);
     } while (currentState.usedAnswers[randA] && usedAnswersNum < answersNum);
 
     return randA;
   }
 
-  console.log(currentState.currentQuestion);
+//  console.log(currentState.currentQuestion);
 
   return currentState.currentQuestion;
 }
@@ -169,5 +305,17 @@ export default {
   get currentState() {
     return currentState;
   },
-  init
+  get initState() {
+    return JSON.parse(JSON.stringify(initState));
+  },
+  init,
+  checkGameState,
+  changeLives,
+  calculateStatistic,
+  changeCorrectAnswers,
+  startTimer,
+  deleteTimer,
+  sortRecords,
+  calculatePassedTime,
+  formatTime
 };

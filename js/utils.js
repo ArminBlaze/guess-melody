@@ -10,7 +10,22 @@ function randomInteger(min, max) {
   return rand;
 }
 
+function generateEvent(elem = document, msg, detail) {
+//		var event = new CustomEvent('card-closed', {bubbles: true});	//Edge > 11 IE
+  let event = document.createEvent(`Event`); // IE 9+
+//		event.initEvent("image-added", true, true); //IE 9+
+  event.initEvent(msg, true, true); // IE 9+
+
+  if (detail) {
+    event.detail = detail;
+  }
+
+  elem.dispatchEvent(event);
+}
+
+
 export default {
   getElementFromTemplate,
-  randomInteger
+  randomInteger,
+  generateEvent
 };
