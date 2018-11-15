@@ -4,6 +4,9 @@ import screenGenre from './screens/screenGenre.js';
 import screenWin from './screens/screenWin.js';
 import screenLose from './screens/screenLose.js';
 
+import eventBus from './framework/eventBus';
+import EVENTS from './framework/events';
+
 const screens = {
   screenWelcome,
   screenArtist,
@@ -15,16 +18,18 @@ const screens = {
 const main = document.querySelector(`.main`);
 
 
-
-
 // init();
 
 function init() {
   renderScreen(`screenWelcome`);
 
-  document.addEventListener(`screensController`, function (e) {
-    renderScreen(e.detail);
+
+  eventBus.subscribe(EVENTS.screens, function (screen) {
+    renderScreen(screen);
   });
+//  document.addEventListener(`screensController`, function (e) {
+//    renderScreen(e.detail);
+//  });
 }
 
 function renderScreen(name) {

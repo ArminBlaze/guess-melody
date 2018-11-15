@@ -1,4 +1,6 @@
 import utils from './utils.js';
+import eventBus from './framework/eventBus';
+import EVENTS from './framework/events';
 // import screensController from './screensController.js';
 
 const Question = function (text, correctAnswerID, answers) {
@@ -176,18 +178,21 @@ function gameLose(str) {
   // Игра закончилась, отрисовываем статистику
   alert(str);
 //  screensController.renderScreen(`screenLose`);
-  utils.generateEvent(undefined, `screensController`, `screenLose`);
+//  utils.generateEvent(undefined, `screensController`, `screenLose`);
+  eventBus.publish(EVENTS.screens, EVENTS.screens.lose);
 }
 
 function gameWin(str) {
   alert(str);
 //  screensController.renderScreen(`screenWin`);
-  utils.generateEvent(undefined, `screensController`, `screenWin`);
+//  utils.generateEvent(undefined, `screensController`, `screenWin`);
+  eventBus.publish(EVENTS.screens, EVENTS.screens.win);
 }
 
 function getRandomScreenForQuestion() {
 //  screensController.renderScreen(`screenArtist`);
-  utils.generateEvent(undefined, `screensController`, `screenArtist`);
+//  utils.generateEvent(undefined, `screensController`, `screenArtist`);
+  eventBus.publish(EVENTS.screens, EVENTS.screens.artist);
 }
 
 function calculateStatistic() {
