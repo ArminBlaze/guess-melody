@@ -159,6 +159,7 @@ function checkGameState(state) {
   currentState = state;
   deleteTimer();
   console.log(Object.keys(currentState.usedAnswers).length, ` Сколько было вопросов`);
+  console.log(currentState.usedAnswers, ` Сколько было вопросов`);
   if (currentState.lives < 1) {
   // жизни закончились, поражение
     gameLose(`Жизни закончились. Поражение.`);
@@ -175,18 +176,18 @@ function gameLose(str) {
   // Игра закончилась, отрисовываем статистику
   alert(str);
 //  screensController.renderScreen(`screenLose`);
-  utils.generateEvent(undefined, `renderScreen`, `screenLose`);
+  utils.generateEvent(undefined, `screensController`, `screenLose`);
 }
 
 function gameWin(str) {
   alert(str);
 //  screensController.renderScreen(`screenWin`);
-  utils.generateEvent(undefined, `renderScreen`, `screenWin`);
+  utils.generateEvent(undefined, `screensController`, `screenWin`);
 }
 
 function getRandomScreenForQuestion() {
 //  screensController.renderScreen(`screenArtist`);
-  utils.generateEvent(undefined, `renderScreen`, `screenArtist`);
+  utils.generateEvent(undefined, `screensController`, `screenArtist`);
 }
 
 function calculateStatistic() {
@@ -211,6 +212,9 @@ function writeRecord(record) {
 function changeLives(state, num) {
   let newState = Object.assign({}, state);
   newState.lives += num;
+  if (newState.lives < 0) {
+    newState.lives = 0;
+  }
   return newState;
 }
 
@@ -312,5 +316,6 @@ export default {
   startTimer,
   deleteTimer,
   sortRecords,
-  calculatePassedTime
+  calculatePassedTime,
+  formatTime
 };

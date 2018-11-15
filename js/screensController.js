@@ -22,7 +22,7 @@ const main = document.querySelector(`.main`);
 function init() {
   renderScreen(`screenWelcome`);
 
-  document.addEventListener(`renderScreen`, function (e) {
+  document.addEventListener(`screensController`, function (e) {
     renderScreen(e.detail);
   });
 }
