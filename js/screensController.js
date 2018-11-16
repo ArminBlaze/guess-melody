@@ -1,8 +1,8 @@
-import screenWelcome from './screens/screenWelcome.js';
-import screenArtist from './screens/screenArtist.js';
-import screenGenre from './screens/screenGenre.js';
-import screenWin from './screens/screenWin.js';
-import screenLose from './screens/screenLose.js';
+import screenWelcome from './screens/welcomeController.js';
+import screenArtist from './screens/artistController.js';
+import screenGenre from './screens/genreController.js';
+import screenWin from './screens/winController.js';
+import screenLose from './screens/loseController.js';
 
 import eventBus from './framework/eventBus';
 import EVENTS from './framework/events';
