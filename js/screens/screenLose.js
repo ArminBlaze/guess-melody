@@ -11,6 +11,7 @@ const template = `<section class="main main--result">
 
 function getElem() {
   const elem = utils.getElementFromTemplate(template);
+	
   const button = elem.querySelector(`.main-replay`);
   button.onclick = function () {
     screensController.renderScreen(`screenWelcome`);
