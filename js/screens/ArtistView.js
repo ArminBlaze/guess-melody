@@ -41,12 +41,30 @@ const template = (question) => `<section class="main main--level main--level-art
 
 
 class ArtistView extends AbstractView {
-  constructor() {
+  constructor(data) {
     super();
+    this._data = data;
     this._template = template;
   }
 
   bind() {
+    const timerElem = this.element.querySelector(`.timer-value`);
+    const timerMin = timerElem.querySelector(`.timer-value-mins`);
+    const timerSec = timerElem.querySelector(`.timer-value-secs`);
+
+    // вызов метода data ?
+    // перенести в контроллер?
+    const question = this._data.getRandomQuestion();
+
+    const audioFile = this._data.answers[question.correctAnswerId].audio;
+
+    let playerWrapper = this.element.querySelector(`.player-wrapper`);
+    window.initializePlayer(playerWrapper, audioFile, `autoplay`, false);
+
+    // вызов метода data ?
+    // это заменить на событие
+    this._data.startTimer(state, {mins: timerMin, secs: timerSec});
+
     this.element.onclick = (evt) => {
       evt.preventDefault();
       this.onClick();

@@ -36,7 +36,7 @@ function renderScreen(name) {
   let elem = screens[name].getElem();
   main.innerHTML = ``;
   main.appendChild(elem);
-  console.log(screens);
+//  console.log(screens);
 }
 
 export default {

@@ -1,23 +1,27 @@
+import utils from '../utils.js';
+
 class AbstractView {
 
   get template() {
     return this._template;
   }
 
-  render(data) {
+  render() {
 		// добавить в этот файл импорт утилс и убрать из экранов
-    return utils.getElementFromTemplate(this.template(data));
+    return utils.getElementFromTemplate(this._template(this._data));
   }
 
   bind() {
 
   }
 
-  get element() {
-    this.elem = this.render(data);
+  getElem() {
+    this.element = this.render();
     this.bind();
 
 		// /ленивая загрузка
+
+    return this.element;
   }
 }
 

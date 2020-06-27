@@ -103,7 +103,7 @@ let currentState;
 
 function init() {
   currentState = JSON.parse(JSON.stringify(initState));
-  console.log(currentState);
+//  console.log(currentState);
 }
 
 
@@ -113,12 +113,12 @@ let timer = null;
 
 function startTimer(state, elem) {
   deleteTimer();
-  const mins = elem.mins;
-  const secs = elem.secs;
+//  const mins = elem.mins;
+//  const secs = elem.secs;
 
   timer = setTimeout(function timerok() {
     state.time--;
-    console.log(state.time);
+//    console.log(state.time);
       // тут перерисовываем окошко времени
     let time = formatTime(state.time);
 
@@ -135,8 +135,8 @@ function startTimer(state, elem) {
 }
 
 function deleteTimer() {
-  console.log(timer);
-  console.log(`Удаляю таймер`);
+//  console.log(timer);
+//  console.log(`Удаляю таймер`);
   if (timer) {
     clearTimeout(timer);
     timer = null;
@@ -160,8 +160,8 @@ function formatTime(seconds) {
 function checkGameState(state) {
   currentState = state;
   deleteTimer();
-  console.log(Object.keys(currentState.usedAnswers).length, ` Сколько было вопросов`);
-  console.log(currentState.usedAnswers, ` Сколько было вопросов`);
+//  console.log(Object.keys(currentState.usedAnswers).length, ` Сколько было вопросов`);
+//  console.log(currentState.usedAnswers, ` Сколько было вопросов`);
   if (currentState.lives < 1) {
   // жизни закончились, поражение
     gameLose(`Жизни закончились. Поражение.`);
@@ -202,7 +202,7 @@ function calculateStatistic() {
   let score = currentState.correctAnswers;
 
   writeRecord({time: passedTime, answers: score});
-  console.log(passedTime, score);
+//  console.log(passedTime, score);
 
   return {time: formattedTime, score};
 }
@@ -210,7 +210,7 @@ function calculateStatistic() {
 function writeRecord(record) {
   tableOfRecords.push(record);
 
-  console.log(tableOfRecords);
+//  console.log(tableOfRecords);
   sortRecords();
 }
 
@@ -239,7 +239,7 @@ function sortRecords() {
     return rankDiff;
   });
 
-  console.log(tableOfRecords);
+//  console.log(tableOfRecords);
 }
 
   // для устойчивости массива, сравниваем по имени
